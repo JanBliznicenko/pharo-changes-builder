@@ -17,19 +17,29 @@ Class {
 		'metaMethods',
 		'metaInstanceVariables'
 	],
-	#category : 'ChangesBuilder-Model'
+	#category : #'ChangesBuilder-Model'
 }
 
 { #category : #'instance creation' }
 CBClass class >> fromClass: aRealClass [
+
 	| class |
 	(class := self new)
 		name: aRealClass name;
 		parent: aRealClass superclass name;
 		package: aRealClass category asString.
-	aRealClass instanceVariables do: [ :each | class addInstVarNamed: each ].
-	aRealClass classVariables do: [ :each | class addClassVarNamed: each ].
-	aRealClass class instanceVariables do: [ :each | class addMetaInstVarNamed: each ].
+	aRealClass instanceVariables do: [ :each | 
+		each isString
+			ifTrue: [ class addInstVarNamed: each ]
+			ifFalse: [ class addInstVarSlot: each ] ].
+	aRealClass classVariables do: [ :each | 
+		each isString
+			ifTrue: [ class addClassVarNamed: each ]
+			ifFalse: [ class addClassVar: each ] ].
+	aRealClass class instanceVariables do: [ :each | 
+		each isString
+			ifTrue: [ class addMetaInstVarNamed: each ]
+			ifFalse: [ class addMetaInstVarSlot: each ] ].
 	^ class
 ]
 
@@ -43,6 +53,12 @@ CBClass class >> name: aString parent: aClass package: aPkgName [
 ]
 
 { #category : #adding }
+CBClass >> addClassVar: aClassVar [
+
+	self addClassVarNamed: aClassVar name
+]
+
+{ #category : #adding }
 CBClass >> addClassVarNamed: aString [
 	classVariables add: aString
 ]
@@ -53,8 +69,20 @@ CBClass >> addInstVarNamed: aString [
 ]
 
 { #category : #adding }
+CBClass >> addInstVarSlot: aSlot [
+
+	self addInstVarNamed: aSlot name
+]
+
+{ #category : #adding }
 CBClass >> addMetaInstVarNamed: aString [
 	metaInstanceVariables add: aString
+]
+
+{ #category : #adding }
+CBClass >> addMetaInstVarSlot: aSlot [
+
+	self addMetaInstVarNamed: aSlot name
 ]
 
 { #category : #adding }
