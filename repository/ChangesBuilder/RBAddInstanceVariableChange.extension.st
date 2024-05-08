@@ -1,6 +1,6 @@
-Extension { #name : #RBAddInstanceVariableChange }
+Extension { #name : 'RBAddInstanceVariableChange' }
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 RBAddInstanceVariableChange >> oldVersionTextToDisplay [
 	| class |
 	class := Smalltalk at: className asSymbol ifAbsent: [ ^ super oldVersionTextToDisplay ].

@@ -1,43 +1,45 @@
 Class {
-	#name : #CBMethodBuilder2,
-	#superclass : #Object,
+	#name : 'CBMethodBuilder2',
+	#superclass : 'Object',
 	#instVars : [
 		'selector',
 		'arguments',
 		'comments',
 		'pragmas'
 	],
-	#category : 'ChangesBuilder-Model'
+	#category : 'ChangesBuilder-Model',
+	#package : 'ChangesBuilder',
+	#tag : 'Model'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> addArgument: anArgument [
 	arguments add: anArgument
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> addComment: aComment [
 	comments add: aComment
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> addPragma: aPragma [
 	pragmas add: aPragma
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> argument: anArgument [
 	arguments
 		removeAll;
 		add: anArgument
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> arguments: aCollection [
 	arguments := aCollection asOrderedCollection
 ]
 
-{ #category : #utility }
+{ #category : 'utility' }
 CBMethodBuilder2 >> asArgument: anObject [
 	| name |
 	name := anObject asString.
@@ -46,18 +48,18 @@ CBMethodBuilder2 >> asArgument: anObject [
 		ifFalse: [ 'a' ]) , name capitalized
 ]
 
-{ #category : #utility }
+{ #category : 'utility' }
 CBMethodBuilder2 >> asComment: aString [
 	"aString asComment duplicates only double quotes that are alone, which is not what I want"
 	^ aString copyReplaceAll: '"' with: '""'
 ]
 
-{ #category : #utility }
+{ #category : 'utility' }
 CBMethodBuilder2 >> asPragma: aPragma [
 	^ aPragma printString
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> basicBuildGetter [
 	selector := selector asRetriever.
 	^ String
@@ -66,7 +68,7 @@ CBMethodBuilder2 >> basicBuildGetter [
 			stream << '^ ' << selector ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> basicBuildSetter [
 	selector := selector asMutator.
 	^ String
@@ -75,7 +77,7 @@ CBMethodBuilder2 >> basicBuildSetter [
 			stream << selector asRetriever << ' := ' << (self asArgument: arguments first) ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> buildComment [
 	^ String
 		<< [ :stream | 
@@ -84,19 +86,19 @@ CBMethodBuilder2 >> buildComment [
 			stream << '"' ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> buildGetter [
 	^ (RBParser parseMethod: self basicBuildGetter) formattedCode
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> buildPragmas [
 	^ String
 		<<
 			[ :stream | pragmas do: [ :each | stream << (self asPragma: each) ] separatedBy: [ stream cr tab ] ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> buildPreambles [
 	^ String
 		<< [ :stream | 
@@ -105,7 +107,7 @@ CBMethodBuilder2 >> buildPreambles [
 			self buildPragmas ifNotEmpty: [ :prag | stream tab << prag ] ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> buildSelector [
 	^ String
 		<< [ :stream | 
@@ -117,24 +119,24 @@ CBMethodBuilder2 >> buildSelector [
 					stream cr ] ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBMethodBuilder2 >> buildSetter [
 	^ (RBParser parseMethod: self basicBuildSetter) formattedCode
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> comment: aComment [
 	comments
 		removeAll;
 		add: aComment
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> comments: aCollection [
 	comments := aCollection asOrderedCollection
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBMethodBuilder2 >> initialize [
 	super initialize.
 	arguments := OrderedCollection new.
@@ -142,19 +144,19 @@ CBMethodBuilder2 >> initialize [
 	pragmas := OrderedCollection new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> pragma: aPragma [
 	pragmas
 		removeAll;
 		add: aPragma
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> pragmas: aCollection [
 	pragmas := aCollection asOrderedCollection
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder2 >> selector: aSelector [
 	selector := aSelector asSymbol
 ]

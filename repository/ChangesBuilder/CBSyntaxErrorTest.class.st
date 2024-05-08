@@ -1,10 +1,12 @@
 Class {
-	#name : #CBSyntaxErrorTest,
-	#superclass : #TestCase,
-	#category : 'ChangesBuilder-Tests'
+	#name : 'CBSyntaxErrorTest',
+	#superclass : 'TestCase',
+	#category : 'ChangesBuilder-Tests',
+	#package : 'ChangesBuilder',
+	#tag : 'Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBSyntaxErrorTest >> testFromSyntaxErrorNotification [
 	| error notification |
 	notification := SyntaxErrorNotification new
@@ -19,7 +21,7 @@ CBSyntaxErrorTest >> testFromSyntaxErrorNotification [
 	self assert: error messageText equals: 'message'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBSyntaxErrorTest >> testStyledErrorMessage [
 	| error  |
 	error := CBSyntaxError new setCode: 'code' location: 1 errorMessage: 'reason'.

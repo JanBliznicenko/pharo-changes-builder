@@ -2,84 +2,87 @@
 I am a method builder that stores the source as a template and then performs a replacement based on the selected strategy.
 "
 Class {
-	#name : #CBTemplateMethodBuilder,
-	#superclass : #Object,
+	#name : 'CBTemplateMethodBuilder',
+	#superclass : 'Object',
 	#instVars : [
 		'template',
 		'protocol',
 		'templateStrategory'
 	],
-	#category : 'ChangesBuilder-Model'
+	#category : 'ChangesBuilder-Model',
+	#package : 'ChangesBuilder',
+	#tag : 'Model'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CBTemplateMethodBuilder class >> forMustache [
 	^ self new
 		useMustache;
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBTemplateMethodBuilder >> initialize [
 	super initialize.
 	self useFormat
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBTemplateMethodBuilder >> method [
 	^ self methodOn: {}
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBTemplateMethodBuilder >> methodOn: aContext [
+
 	^ CBMethod new
-		source: (self sourceOn: aContext);
-		protocol: protocol;
-		yourself
+		  source: (self sourceOn: aContext);
+		  protocolName: protocol;
+		  yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBTemplateMethodBuilder >> protocol: anObject [
 	protocol := anObject
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBTemplateMethodBuilder >> runStrategyOn: aTemplate context: aContext [
 	^ templateStrategory value: aTemplate value: aContext
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBTemplateMethodBuilder >> source [
 	^ self sourceOn: {}
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 CBTemplateMethodBuilder >> sourceOn: aContext [
 	^ self runStrategyOn: template context: aContext
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBTemplateMethodBuilder >> template: anObject [
 	template := anObject
 ]
 
-{ #category : #strategies }
+{ #category : 'strategies' }
 CBTemplateMethodBuilder >> templateStrategy: aTemplateContextBlock [
 	templateStrategory := aTemplateContextBlock
 ]
 
-{ #category : #strategies }
+{ #category : 'strategies' }
 CBTemplateMethodBuilder >> useFormat [
 	self templateStrategy: [ :aTemplate :aContext | aTemplate format: aContext ]
 ]
 
-{ #category : #strategies }
+{ #category : 'strategies' }
 CBTemplateMethodBuilder >> useMacros [
 	self
 		templateStrategy: [ :aTemplate :aContext | aTemplate expandMacrosWithArguments: aContext ]
 ]
 
-{ #category : #strategies }
+{ #category : 'strategies' }
 CBTemplateMethodBuilder >> useMustache [
 	self
 		templateStrategy: [ :aTemplate :aContext | (MustacheTemplate on: aTemplate) value: aContext asDictionary ]

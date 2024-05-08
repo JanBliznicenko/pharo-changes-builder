@@ -1,6 +1,6 @@
-Extension { #name : #RBCommentChange }
+Extension { #name : 'RBCommentChange' }
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 RBCommentChange >> oldVersionTextToDisplay [
 	| cls |
 	(Smalltalk hasClassNamed: className)
@@ -11,7 +11,7 @@ RBCommentChange >> oldVersionTextToDisplay [
 		ifFalse: [ '' ]
 ]
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 RBCommentChange >> textToDisplay [
 	^ self comment
 ]

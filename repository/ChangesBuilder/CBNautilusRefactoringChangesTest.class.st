@@ -1,18 +1,20 @@
 Class {
-	#name : #CBNautilusRefactoringChangesTest,
-	#superclass : #TestCase,
+	#name : 'CBNautilusRefactoringChangesTest',
+	#superclass : 'TestCase',
 	#classInstVars : [
 		'metaVar1'
 	],
-	#category : 'ChangesBuilder-Tests'
+	#category : 'ChangesBuilder-Tests',
+	#package : 'ChangesBuilder',
+	#tag : 'Tests'
 }
 
-{ #category : #support }
+{ #category : 'support' }
 CBNautilusRefactoringChangesTest >> methodForTest [
 	"do not delete me, I am used in #testMethodNotChanged"
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testAddMetaVarChanged [
 	| cls change |
 	cls := CBClass new
@@ -24,7 +26,7 @@ CBNautilusRefactoringChangesTest >> testAddMetaVarChanged [
 	self assert: (CBChangeSet new addClass: cls) refactoringChanges isNotEmpty
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testAddMetaVarNotChanged [
 	| cls change |
 	cls := CBClass new
@@ -37,7 +39,7 @@ CBNautilusRefactoringChangesTest >> testAddMetaVarNotChanged [
 	self assert: (CBChangeSet new addClass: cls) refactoringChanges isEmpty
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testClassChanged [
 	| cls change |
 	cls := CBClass new
@@ -49,7 +51,7 @@ CBNautilusRefactoringChangesTest >> testClassChanged [
 	self assert: (CBChangeSet new addClass: cls) refactoringChanges isNotEmpty
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testClassNotChanged [
 	| cls change |
 	cls := CBClass new
@@ -61,14 +63,14 @@ CBNautilusRefactoringChangesTest >> testClassNotChanged [
 	self assert: (CBChangeSet new addClass: cls) refactoringChanges isEmpty
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testExample [
 	| window |
 	window := CBChangeSet example.
 	window delete.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testMethodChanged [
 	| cls change |
 	cls := CBClass new name: self class name.
@@ -79,7 +81,7 @@ CBNautilusRefactoringChangesTest >> testMethodChanged [
 	self assert: (CBChangeSet new addClass: cls) refactoringChanges size equals: 2
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testMethodNotChanged [
 	| cls change |
 	cls := CBClass new name: self class name.

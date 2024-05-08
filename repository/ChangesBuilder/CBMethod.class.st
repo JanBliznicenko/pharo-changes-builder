@@ -4,116 +4,137 @@ I represent a in-memory method that knows how to convert itself to RBChange to g
 I also provide couple more convenient methods for code definition.
 "
 Class {
-	#name : #CBMethod,
-	#superclass : #Object,
+	#name : 'CBMethod',
+	#superclass : 'Object',
 	#instVars : [
 		'source',
-		'protocol'
+		'protocolName'
 	],
-	#category : 'ChangesBuilder-Model'
+	#category : 'ChangesBuilder-Model',
+	#package : 'ChangesBuilder',
+	#tag : 'Model'
 }
 
-{ #category : #utility }
+{ #category : 'utility' }
 CBMethod >> asArgumentName: aString [
 	^ (aString first isVowel
 		ifTrue: [ 'an' ]
 		ifFalse: [ 'a' ]) , aString capitalized
 ]
 
-{ #category : #utility }
+{ #category : 'utility' }
 CBMethod >> asComment: aString [
 	"aString asComment duplicates only double quotes that are alone, which is not what I want"
 	^ aString copyReplaceAll: '"' with: '""'
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> getter: aVariableName [
-	self protocol: 'accessing'.
-	self
-		source:
-			('<1s>
+
+	self protocolName: 'accessing'.
+	self source: ('<1s>
 	^ <1s>' expandMacrosWith: aVariableName)
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> getter: aVariableName comment: aComment [
+
 	aComment ifNil: [ ^ self getter: aVariableName ].
-	self protocol: 'accessing'.
-	self
-		source:
-			('<1s>
+	self protocolName: 'accessing'.
+	self source: ('<1s>
 	"<2s>"
-	^ <1s>' expandMacrosWith: aVariableName with: (self asComment: aComment))
+	^ <1s>'
+			 expandMacrosWith: aVariableName
+			 with: (self asComment: aComment))
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> getter: aVariableName comment: aComment defaultValue: aDefaultValue [
-	aComment ifNil: [ ^ self getter: aVariableName defaultValue: aDefaultValue ].
-	self protocol: 'accessing'.
-	self
-		source:
-			('<1s>
+
+	aComment ifNil: [
+		^ self getter: aVariableName defaultValue: aDefaultValue ].
+	self protocolName: 'accessing'.
+	self source: ('<1s>
 	"<2s>"
 	^ <1s> ifNil: [ <1s> := <3s> ]'
-				expandMacrosWith: aVariableName
-				with: (self asComment: aComment)
-				with: aDefaultValue)
+			 expandMacrosWith: aVariableName
+			 with: (self asComment: aComment)
+			 with: aDefaultValue)
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> getter: aVariableName defaultValue: aDefaultValue [
-	self protocol: 'accessing'.
-	self
-		source:
-			('<1s>
+
+	self protocolName: 'accessing'.
+	self source: ('<1s>
 	^ <1s> ifNil: [ <1s> := <2s> ]'
-				expandMacrosWith: aVariableName
-				with: aDefaultValue)
+			 expandMacrosWith: aVariableName
+			 with: aDefaultValue)
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> getter: aVariableName delegateFrom: aString [
-	self protocol: 'accessing'.
+	self protocolName: 'accessing'.
 	self
 		source:
 			('<1s>
 	^ <2s> <1s>' expandMacrosWith: aVariableName with: aString)
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBMethod >> initialize [
 	super initialize.
-	protocol := 'as yet unclassified'
+	protocolName := 'as yet unclassified'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethod >> protocol [
-	^ protocol
+
+	self
+		deprecated: 'Use #protocolName instead'
+		transformWith: '`@receiver protocol' -> '`@receiver protocolName'.
+	^ self protocolName
 ]
 
-{ #category : #accessing }
-CBMethod >> protocol: aString [
-	protocol := aString
+{ #category : 'accessing' }
+CBMethod >> protocol: aProtocolName [
+
+	self
+		deprecated: 'Use #protocolName: instead'
+		transformWith:
+		'`@receiver protocol: `@arg' -> '`@receiver protocolName: `@arg'.
+	^ self protocolName: aProtocolName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
+CBMethod >> protocolName [
+	^ protocolName
+]
+
+{ #category : 'accessing' }
+CBMethod >> protocolName: aString [
+	protocolName := aString
+]
+
+{ #category : 'accessing' }
 CBMethod >> selector [
 	^ (RBParser parseMethod: source) selector
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> setter: aVariableName argument: anArgumentName [
-	self protocol: 'accessing'.
-	self
-		source:
-			('<1s>: <2s>
-	<1s> := <2s>' expandMacrosWith: aVariableName with: (self asArgumentName: anArgumentName))
+
+	self protocolName: 'accessing'.
+	self source: ('<1s>: <2s>
+	<1s> := <2s>'
+			 expandMacrosWith: aVariableName
+			 with: (self asArgumentName: anArgumentName))
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> setter: aVariableName argument: anArgumentName comment: aComment [
 	aComment ifNil: [ ^ self setter: aVariableName argument: anArgumentName ].
-	self protocol: 'accessing'.
+	self protocolName: 'accessing'.
 	self
 		source:
 			('<1s>: <2s>
@@ -124,9 +145,9 @@ CBMethod >> setter: aVariableName argument: anArgumentName comment: aComment [
 				with: (self asComment: aComment))
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> setter: aVariableName argument: anArgumentName delegateTo: aString [
-	self protocol: 'accessing'.
+	self protocolName: 'accessing'.
 	self
 		source:
 			('<1s>: <2s>
@@ -136,7 +157,7 @@ CBMethod >> setter: aVariableName argument: anArgumentName delegateTo: aString [
 				with: aString)
 ]
 
-{ #category : #definition }
+{ #category : 'definition' }
 CBMethod >> setter: aVariableName argument: anArgumentName delegateTo: aString comment: aComment [
 	self protocol: 'accessing'.
 	self
@@ -150,18 +171,18 @@ CBMethod >> setter: aVariableName argument: anArgumentName delegateTo: aString c
 				with: (self asComment: aComment))
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethod >> source [
 	^ source
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethod >> source: aString [
 	self validateSource: aString.
 	source := aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethod >> validateSource: aString [
 	[ RBParser parseMethod: aString ]
 		on: SyntaxErrorNotification

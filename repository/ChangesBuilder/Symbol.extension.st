@@ -1,6 +1,6 @@
-Extension { #name : #Symbol }
+Extension { #name : 'Symbol' }
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 Symbol >> asRetriever [
 	"Return a gette message from a setter message. For example,
 	#name: asRetriever returns #name

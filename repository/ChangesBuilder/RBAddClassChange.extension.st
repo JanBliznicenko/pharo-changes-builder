@@ -1,6 +1,6 @@
-Extension { #name : #RBAddClassChange }
+Extension { #name : 'RBAddClassChange' }
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 RBAddClassChange >> oldVersionTextToDisplay [
 	(Smalltalk hasClassNamed: className)
 		ifFalse: [ ^ '' ].

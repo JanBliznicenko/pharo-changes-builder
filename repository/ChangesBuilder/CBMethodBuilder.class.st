@@ -4,26 +4,28 @@ A utility class for building code piece by piece.
 Note that this was first attempt and I do not like this class, so don't get too attached to it...
 "
 Class {
-	#name : #CBMethodBuilder,
-	#superclass : #Object,
+	#name : 'CBMethodBuilder',
+	#superclass : 'Object',
 	#instVars : [
 		'source',
 		'indent'
 	],
-	#category : 'ChangesBuilder-Model'
+	#category : 'ChangesBuilder-Model',
+	#package : 'ChangesBuilder',
+	#tag : 'Model'
 }
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBMethodBuilder >> addComment: aString [
 	self addLine: '"' , (self asComment: aString) , '"'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder >> addIndent [
 	indent := indent + 1
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder >> addLine: aString [
 	source := String
 		streamContents: [ :stream | 
@@ -33,30 +35,30 @@ CBMethodBuilder >> addLine: aString [
 			stream cr ]
 ]
 
-{ #category : #utility }
+{ #category : 'utility' }
 CBMethodBuilder >> asComment: aString [
 	"aString asComment duplicates only double quotes that are alone, which is not what I want"
 	^ aString copyReplaceAll: '"' with: '""'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBMethodBuilder >> initialize [
 	source := ''.
 	indent := 0
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder >> removeIndent [
 	indent := indent - 1
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder >> selector: aString [
 	self addLine: aString.
 	self addIndent
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBMethodBuilder >> source [
 	^ source
 ]

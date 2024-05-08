@@ -3,16 +3,18 @@ I am fired when CBMethod was provided with invalid source code.
 I repackage SyntaxErrorNotification, because the error processing in SyntaxErrorNotification is broken and can induce image corruption.
 "
 Class {
-	#name : #CBSyntaxError,
-	#superclass : #Error,
+	#name : 'CBSyntaxError',
+	#superclass : 'Error',
 	#instVars : [
 		'code',
 		'location'
 	],
-	#category : 'ChangesBuilder-Model'
+	#category : 'ChangesBuilder-Model',
+	#package : 'ChangesBuilder',
+	#tag : 'Model'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CBSyntaxError class >> fromSyntaxErrorNotification: aNotification [
 	^ self new
 		setCode: aNotification errorCode
@@ -20,30 +22,30 @@ CBSyntaxError class >> fromSyntaxErrorNotification: aNotification [
 		errorMessage: aNotification errorMessage
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBSyntaxError >> defaultAction [
 	UIManager default longMessage: self styledErrorMessage title: self messageText.
 	super defaultAction
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBSyntaxError >> errorCode [
 	^ code
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBSyntaxError >> location [
 	^ location
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBSyntaxError >> setCode: aSourceCode location: aLocation errorMessage: anErrorMessage [
 	code := aSourceCode.
 	location := aLocation.
 	messageText := anErrorMessage
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBSyntaxError >> styledErrorMessage [
 	^ self errorCode asText
 		copyReplaceFrom: self location

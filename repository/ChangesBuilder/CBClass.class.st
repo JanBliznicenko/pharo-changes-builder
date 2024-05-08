@@ -4,171 +4,204 @@ I represent a in-memory class that knows how to convert itself to RBChange to ge
 I also provide couple more convenient methods for code definition.
 "
 Class {
-	#name : #CBClass,
-	#superclass : #Object,
+	#name : 'CBClass',
+	#superclass : 'Object',
 	#instVars : [
 		'name',
 		'comment',
 		'parent',
 		'package',
+		'tag',
 		'instanceVariables',
 		'classVariables',
 		'methods',
 		'metaMethods',
 		'metaInstanceVariables'
 	],
-	#category : #'ChangesBuilder-Model'
+	#category : 'ChangesBuilder-Model',
+	#package : 'ChangesBuilder',
+	#tag : 'Model'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CBClass class >> fromClass: aRealClass [
 
 	| class |
 	(class := self new)
 		name: aRealClass name;
 		parent: aRealClass superclass name;
-		package: aRealClass category asString.
-	aRealClass instanceVariables do: [ :each | 
+		package: aRealClass package name;
+		tag: aRealClass packageTag name.
+	aRealClass instanceVariables do: [ :each |
 		each isString
 			ifTrue: [ class addInstVarNamed: each ]
 			ifFalse: [ class addInstVarSlot: each ] ].
-	aRealClass classVariables do: [ :each | 
+	aRealClass classVariables do: [ :each |
 		each isString
 			ifTrue: [ class addClassVarNamed: each ]
 			ifFalse: [ class addClassVar: each ] ].
-	aRealClass class instanceVariables do: [ :each | 
+	aRealClass class instanceVariables do: [ :each |
 		each isString
 			ifTrue: [ class addMetaInstVarNamed: each ]
 			ifFalse: [ class addMetaInstVarSlot: each ] ].
 	^ class
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CBClass class >> name: aString parent: aClass package: aPkgName [
+
 	^ self new
-		name: aString;
-		parent: aClass;
-		package: aPkgName;
-		yourself
+		  name: aString;
+		  parent: aClass;
+		  package: aPkgName;
+		  yourself
 ]
 
-{ #category : #adding }
+{ #category : 'instance creation' }
+CBClass class >> name: aString parent: aClass package: aPkgName tag: aTagName [
+
+	^ self new
+		  name: aString;
+		  parent: aClass;
+		  package: aPkgName;
+		  tag: aTagName;
+		  yourself
+]
+
+{ #category : 'adding' }
 CBClass >> addClassVar: aClassVar [
 
 	self addClassVarNamed: aClassVar name
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addClassVarNamed: aString [
 	classVariables add: aString
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addInstVarNamed: aString [
 	instanceVariables add: aString
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addInstVarSlot: aSlot [
 
 	self addInstVarNamed: aSlot name
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addMetaInstVarNamed: aString [
 	metaInstanceVariables add: aString
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addMetaInstVarSlot: aSlot [
 
 	self addMetaInstVarNamed: aSlot name
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addMetaMethod: aMethod [
 	metaMethods at: aMethod selector put: aMethod
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> addMethod: aMethod [
 	methods at: aMethod selector put: aMethod
 ]
 
-{ #category : #generating }
+{ #category : 'accessing' }
+CBClass >> categoryName [
+
+	self tag ifNil: [ ^ self package ].
+	self tag ifEmpty: [ ^ self package ].
+	^ self package , '-' , self tag
+]
+
+{ #category : 'generating' }
 CBClass >> classDefinition [
+
 	self assert: [ name isString & name isNotEmpty ].
 	self assert: [ parent isString & parent isNotEmpty ].
 	self assert: [ instanceVariables isCollection ].
 	self assert: [ instanceVariables allSatisfy: #isString ].
 	self assert: [ package isString & package isNotEmpty ].
-	^ '<1s> subclass: #<2s><n><t>instanceVariableNames: <3p><n><t>classVariableNames: <4p><n><t>poolDictionaries: ''''<n><t>category: <5p>'
-		expandMacrosWithArguments:
-			{parent.
-			name.
-			self instanceVariables sorted joinUsing: ' '.
-			self classVariables sorted joinUsing: ' '.
-			package}
+	self assert: [ tag isString ].
+	^ [ :builder |
+	  builder
+		  superclassName: parent;
+		  name: name;
+		  slots: self instanceVariables sorted;
+		  sharedVariables: self classVariables sorted;
+		  package: package;
+		  tag: tag ]
 ]
 
-{ #category : #accessing }
+{ #category : 'generating' }
+CBClass >> classDefinitionCode [
+
+	^ self classDefinition sourceCode
+]
+
+{ #category : 'accessing' }
 CBClass >> classVarNames [
 	^ self classVariables
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> classVariables [
 	^ classVariables asArray
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> comment [
 	^ comment
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> comment: anObject [
 	comment := anObject
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> compile: aString classified: aProtocol [
 	self
 		addMethod:
 			(CBMethod new
 				source: aString;
-				protocol: aProtocol)
+				protocolName: aProtocol)
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CBClass >> compileMeta: aString classified: aProtocol [
-	self
-		addMetaMethod:
-			(CBMethod new
-				source: aString;
-				protocol: aProtocol)
+
+	self addMetaMethod: (CBMethod new
+			 source: aString;
+			 protocolName: aProtocol)
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CBClass >> hasClassVarNamed: aString [
 	^ classVariables includes: aString
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CBClass >> hasInstVarNamed: aString [
 	^ instanceVariables includes: aString
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CBClass >> hasMetaInstVarNamed: aString [
 	^ metaInstanceVariables includes: aString
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBClass >> initialize [
 	super initialize.
 	parent := 'Object'.
 	package := 'Unclassified'.
+	tag := ''.
 	instanceVariables := Set new.
 	classVariables := Set new.
 	metaInstanceVariables := Set new.
@@ -176,67 +209,67 @@ CBClass >> initialize [
 	metaMethods := OrderedDictionary new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> instVarNames [
 	^ self instanceVariables
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> instanceVariables [
 	^ instanceVariables asArray
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> metaInstanceVariables [
 	^ metaInstanceVariables asArray
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> metaMethods [
 	^ metaMethods values
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> methodNamed: aName [
 	^ self methods detect: [ :each | each selector = aName ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> methods [
 	^ methods values
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> name [
 	^ name
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> name: aString [
 	name := aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> package [
 	^ package
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> package: aString [
 	package := aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> parent [
 	^ parent
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> parent: aClass [
 	parent := aClass
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CBClass >> printOn: aStream [
 	super printOn: aStream.
 	aStream
@@ -253,14 +286,26 @@ CBClass >> printOn: aStream [
 	aStream << '))'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> realClass [
+
 	^ (Smalltalk hasClassNamed: self name)
-		ifTrue: [ self name asClass ]
-		ifFalse: [ nil ]
+		  ifTrue: [ self name asClassInEnvironment: self class environment ]
+		  ifFalse: [ nil ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBClass >> selectors [
 	^ methods keys
+]
+
+{ #category : 'accessing' }
+CBClass >> tag [
+
+	^ tag
+]
+
+{ #category : 'accessing' }
+CBClass >> tag: aString [
+	tag := aString
 ]

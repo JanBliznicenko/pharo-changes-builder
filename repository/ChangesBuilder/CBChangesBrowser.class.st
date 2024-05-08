@@ -2,15 +2,17 @@
 I override ChangesBrowser>>accept to provide a progress bar.
 "
 Class {
-	#name : #CBChangesBrowser,
-	#superclass : #ChangesBrowser,
+	#name : 'CBChangesBrowser',
+	#superclass : 'ChangesBrowser',
 	#instVars : [
 		'diffModel'
 	],
-	#category : 'ChangesBuilder-Utilities'
+	#category : 'ChangesBuilder-Utilities',
+	#package : 'ChangesBuilder',
+	#tag : 'Utilities'
 }
 
-{ #category : #specs }
+{ #category : 'specs' }
 CBChangesBrowser class >> defaultSpec [
 	<spec>
 	^ SpecLayout composed
@@ -21,7 +23,7 @@ CBChangesBrowser class >> defaultSpec [
 				add: #diffModel ]
 ]
 
-{ #category : #visiting }
+{ #category : 'visiting' }
 CBChangesBrowser >> accept [
 	self okToChange
 		ifFalse: [ ^ self ].
@@ -38,17 +40,17 @@ CBChangesBrowser >> accept [
 	window value delete
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CBChangesBrowser >> diffModel [
 	^ diffModel
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBChangesBrowser >> initialExtent [
 	^ 800 @ 600
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBChangesBrowser >> initializePresenter [
 	changesTree
 		whenHighlightedItemChanged: [ :item | 
@@ -58,7 +60,7 @@ CBChangesBrowser >> initializePresenter [
 						rightText: item content textToDisplay ] ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CBChangesBrowser >> initializeWidgets [
 	super initializeWidgets.
 	diffModel := self newDiff.

@@ -1,13 +1,15 @@
 Class {
-	#name : #CBMethodBuilderTest,
-	#superclass : #TestCase,
+	#name : 'CBMethodBuilderTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'builder'
 	],
-	#category : 'ChangesBuilder-Tests'
+	#category : 'ChangesBuilder-Tests',
+	#package : 'ChangesBuilder',
+	#tag : 'Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testAddComment [
 	builder := CBMethodBuilder new.
 	builder addComment: 'hello'.
@@ -15,7 +17,7 @@ CBMethodBuilderTest >> testAddComment [
 	self assert: (builder asComment: 't"e"xt') equals: 't""e""xt'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testAddIndent [
 	builder := CBMethodBuilder new.
 	builder addLine: 'first'.
@@ -43,7 +45,7 @@ CBMethodBuilderTest >> testAddIndent [
 '
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testAddLine [
 	builder := CBMethodBuilder new.
 	builder addLine: 'first'.
@@ -55,14 +57,14 @@ second
 '
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testAsComment [
 	builder := CBMethodBuilder new.
 	self assert: (builder asComment: 'text') equals: 'text'.
 	self assert: (builder asComment: 't"e"xt') equals: 't""e""xt'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testComment [
 	builder := CBMethodBuilder new.
 	builder addComment: 'first'.
@@ -73,7 +75,7 @@ CBMethodBuilderTest >> testComment [
 '
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testIndentAfterSelector [
 	builder := CBMethodBuilder new.
 	builder selector: 'first'.
@@ -83,7 +85,7 @@ CBMethodBuilderTest >> testIndentAfterSelector [
 '
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testRemoveIndent [
 	builder := CBMethodBuilder new.
 	builder addIndent.
@@ -103,7 +105,7 @@ second
 '
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testSelector [
 	builder := CBMethodBuilder new.
 	builder selector: 'first'.
@@ -111,7 +113,7 @@ CBMethodBuilderTest >> testSelector [
 '
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBMethodBuilderTest >> testStart [
 	builder := CBMethodBuilder new.
 	self assert: builder source equals: ''

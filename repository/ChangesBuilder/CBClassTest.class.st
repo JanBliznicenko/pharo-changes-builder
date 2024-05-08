@@ -1,20 +1,22 @@
 Class {
-	#name : #CBClassTest,
-	#superclass : #TestCase,
+	#name : 'CBClassTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'result',
 		'class'
 	],
-	#category : 'ChangesBuilder-Tests'
+	#category : 'ChangesBuilder-Tests',
+	#package : 'ChangesBuilder',
+	#tag : 'Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 CBClassTest >> setUp [
 	super setUp.
-	class := CBClass name: 'MyXXTestClass' parent: 'Object' package: 'GeneratedCode'
+	class := CBClass name: 'MyXXTestClass' parent: 'Object' package: 'GeneratedCode' tag: ''
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testAddClassVariable [
 	class addClassVarNamed: 'something'.
 	self assert: class classVariables equals: #(something).
@@ -22,7 +24,7 @@ CBClassTest >> testAddClassVariable [
 	self assert: (class hasClassVarNamed: 'something')
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testAddInstanceVariable [
 	class addInstVarNamed: 'something'.
 	self assert: class instanceVariables equals: #(something).
@@ -30,14 +32,14 @@ CBClassTest >> testAddInstanceVariable [
 	self assert: (class hasInstVarNamed: 'something')
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testAddMetaInstanceVariable [
 	class addMetaInstVarNamed: 'something'.
 	self assert: class metaInstanceVariables equals: #(something).
 	self assert: (class hasMetaInstVarNamed: 'something')
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testAddMetaMethod [
 	class addMetaMethod: (CBMethod new getter: 'item').
 	self assert: class metaMethods size equals: 1.
@@ -45,7 +47,7 @@ CBClassTest >> testAddMetaMethod [
 	self assert: class selectors equals: #()
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testAddMethod [
 	| method |
 	method := CBMethod new getter: 'item'.
@@ -56,20 +58,20 @@ CBClassTest >> testAddMethod [
 	self assert: (class methodNamed: #item) equals: method
 ]
 
-{ #category : #tests }
-CBClassTest >> testClassDefinition [
+{ #category : 'tests' }
+CBClassTest >> testClassDefinitionCode [
 	class := CBClass
 		name: 'SomeGeneratedClassSomewhere'
 		parent: 'OPCGClassTest'
 		package: 'Somewhere'.
 	self
-		assert: class classDefinition
+		assert: class classDefinitionCode
 		equals:
 			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''''<n><t>classVariableNames: ''''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
 				expandMacros
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBClassTest >> testClassDefinitionVarsSorted [
 	class := CBClass
 		name: 'SomeGeneratedClassSomewhere'
@@ -80,13 +82,13 @@ CBClassTest >> testClassDefinitionVarsSorted [
 	class addClassVarNamed: 'clsVar2'.
 	class addClassVarNamed: 'clsVar1'.
 	self
-		assert: class classDefinition
+		assert: class classDefinitionCode
 		equals:
 			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''var1 var2''<n><t>classVariableNames: ''clsVar1 clsVar2''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
 				expandMacros
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBClassTest >> testClassDefinitionWithInstanceAndClassVars [
 	class := CBClass
 		name: 'SomeGeneratedClassSomewhere'
@@ -97,13 +99,13 @@ CBClassTest >> testClassDefinitionWithInstanceAndClassVars [
 	class addClassVarNamed: 'clsVar1'.
 	class addClassVarNamed: 'clsVar2'.
 	self
-		assert: class classDefinition
+		assert: class classDefinitionCode
 		equals:
 			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''var1 var2''<n><t>classVariableNames: ''clsVar1 clsVar2''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
 				expandMacros
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBClassTest >> testClassDefinitionWithInstanceVars [
 	class := CBClass
 		name: 'SomeGeneratedClassSomewhere'
@@ -112,55 +114,49 @@ CBClassTest >> testClassDefinitionWithInstanceVars [
 	class addInstVarNamed: 'var1'.
 	class addInstVarNamed: 'var2'.
 	self
-		assert: class classDefinition
+		assert: class classDefinitionCode
 		equals:
 			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''var1 var2''<n><t>classVariableNames: ''''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
 				expandMacros
 ]
 
-{ #category : #'tests - accessing' }
+{ #category : 'tests - accessing' }
 CBClassTest >> testComment [
 	self assert: class comment equals: nil.
 	class comment: 'hello'.
 	self assert: class comment equals: 'hello'
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testCompileMetaMethod [
+
 	class
-		compileMeta:
-			'item
+		compileMeta: 'item
 	^ item'
 		classified: 'accessing'.
 	self assert: class methods size equals: 0.
 	self assert: class metaMethods size equals: 1.
-	self assert: class metaMethods first protocol equals: 'accessing'.
-	self
-		assert: class metaMethods first source
-		equals:
-			'item
+	self assert: class metaMethods first protocolName equals: 'accessing'.
+	self assert: class metaMethods first source equals: 'item
 	^ item'
 ]
 
-{ #category : #'tests - adding' }
+{ #category : 'tests - adding' }
 CBClassTest >> testCompileMethod [
+
 	class
-		compile:
-			'item
+		compile: 'item
 	^ item'
 		classified: 'accessing'.
 	self assert: class metaMethods size equals: 0.
 	self assert: class methods size equals: 1.
-	self assert: class selectors equals: #(item).
-	self assert: class methods first protocol equals: 'accessing'.
-	self
-		assert: class methods first source
-		equals:
-			'item
+	self assert: class selectors equals: #( item ).
+	self assert: class methods first protocolName equals: 'accessing'.
+	self assert: class methods first source equals: 'item
 	^ item' expandMacros
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBClassTest >> testCreate [
 	result := CBClass name: 'MyClass' parent: 'Something' package: 'Generated'.
 	self assert: result name equals: 'MyClass'.
@@ -168,7 +164,7 @@ CBClassTest >> testCreate [
 	self assert: result package equals: 'Generated'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CBClassTest >> testFromRealClass [
 	| realClass |
 	realClass := self class.
@@ -178,13 +174,13 @@ CBClassTest >> testFromRealClass [
 	self assert: class package equals: realClass category
 ]
 
-{ #category : #'tests - accessing' }
+{ #category : 'tests - accessing' }
 CBClassTest >> testPackage [
 	class package: 'Wherever'.
 	self assert: class package equals: 'Wherever'
 ]
 
-{ #category : #'tests - accessing' }
+{ #category : 'tests - accessing' }
 CBClassTest >> testParent [
 	class := CBClass new.
 	self assert: class parent equals: 'Object'.
@@ -192,7 +188,7 @@ CBClassTest >> testParent [
 	self assert: class parent equals: 'TestCase'
 ]
 
-{ #category : #'tests - accessing' }
+{ #category : 'tests - accessing' }
 CBClassTest >> testRealClass [
 	class name: self class name.
 	self assert: class realClass equals: self class.

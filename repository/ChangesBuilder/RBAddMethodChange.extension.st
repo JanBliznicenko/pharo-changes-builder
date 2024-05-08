@@ -1,6 +1,6 @@
-Extension { #name : #RBAddMethodChange }
+Extension { #name : 'RBAddMethodChange' }
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 RBAddMethodChange >> oldVersionTextToDisplay [
 	| class |
 	class := Smalltalk at: className asSymbol ifAbsent: [ ^ super oldVersionTextToDisplay ].
@@ -12,7 +12,7 @@ RBAddMethodChange >> oldVersionTextToDisplay [
 		ifAbsent: [ super oldVersionTextToDisplay ]
 ]
 
-{ #category : #'*ChangesBuilder' }
+{ #category : '*ChangesBuilder' }
 RBAddMethodChange >> textToDisplay [
 	^ '"' , self protocol , '"' , String cr , self source
 ]
