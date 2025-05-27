@@ -12,8 +12,8 @@ Class {
 { #category : 'asserting' }
 CBMethodTest >> assertMethod: actualCode equals: expectedCode [
 	self
-		assert: (RBParser parseMethod: actualCode) formattedCode
-		equals: (RBParser parseMethod: expectedCode) formattedCode
+		assert: (OCParser parseMethod: actualCode) formattedCode
+		equals: (OCParser parseMethod: expectedCode) formattedCode
 ]
 
 { #category : 'tests' }

@@ -88,7 +88,7 @@ CBMethodBuilder2 >> buildComment [
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildGetter [
-	^ (RBParser parseMethod: self basicBuildGetter) formattedCode
+	^ (OCParser parseMethod: self basicBuildGetter) formattedCode
 ]
 
 { #category : 'building' }
@@ -121,7 +121,7 @@ CBMethodBuilder2 >> buildSelector [
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildSetter [
-	^ (RBParser parseMethod: self basicBuildSetter) formattedCode
+	^ (OCParser parseMethod: self basicBuildSetter) formattedCode
 ]
 
 { #category : 'accessing' }
