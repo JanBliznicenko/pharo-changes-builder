@@ -12,8 +12,8 @@ Class {
 { #category : 'asserting' }
 CBMethodBuilder2Test >> assertMethod: actualCode equals: expectedCode [
 	self
-		assert: (RBParser parseMethod: actualCode) formattedCode
-		equals: (RBParser parseMethod: expectedCode) formattedCode
+		assert: (OCParser parseMethod: actualCode) formattedCode
+		equals: (OCParser parseMethod: expectedCode) formattedCode
 ]
 
 { #category : 'running' }
@@ -23,13 +23,14 @@ CBMethodBuilder2Test >> setUp [
 
 { #category : 'tests' }
 CBMethodBuilder2Test >> testBuildGetter [
-	builder selector: 'item'.
+
+	builder selector: #item.
 	builder addComment: 'hello'.
-	builder addPragma: (Pragma keyword: #generated arguments: {}).
-	self
-		assertMethod: builder buildGetter
-		equals:
-			'item
+	builder addPragma: (Pragma new
+			 selector: #generated;
+			 arguments: {  };
+			 yourself).
+	self assertMethod: builder buildGetter equals: 'item
 	"hello"
 	<generated>
 	^ item'
@@ -55,14 +56,15 @@ CBMethodBuilder2Test >> testBuildSelectorUnary [
 
 { #category : 'tests' }
 CBMethodBuilder2Test >> testBuildSetter [
+
 	builder selector: #item:.
 	builder arguments: { 'Item' }.
 	builder addComment: 'hello'.
-	builder addPragma: (Pragma keyword: #generated arguments: {}).
-	self
-		assertMethod: builder buildSetter
-		equals:
-			'item: anItem
+	builder addPragma: (Pragma new
+			 selector: #generated;
+			 arguments: {  };
+			 yourself).
+	self assertMethod: builder buildSetter equals: 'item: anItem
 	"hello"
 	<generated>
 	item := anItem'
@@ -80,11 +82,15 @@ CBMethodBuilder2Test >> testWithComment [
 
 { #category : 'tests' }
 CBMethodBuilder2Test >> testWithPragma [
-	builder addPragma: (Pragma keyword: #generated arguments: {}).
-	builder addPragma: (Pragma keyword: #hello:world: arguments: (Array with: 'a' with: 'b')).
-	self
-		assert: builder buildPragmas
-		equals:
-			'<generated>
+
+	builder addPragma: (Pragma new
+			 selector: #generated;
+			 arguments: {  };
+			 yourself).
+	builder addPragma: (Pragma new
+			 selector: #hello:world:;
+			 arguments: { 'a'. 'b' };
+			 yourself).
+	self assert: builder buildPragmas equals: '<generated>
 	<hello: ''a'' world: ''b''>'
 ]

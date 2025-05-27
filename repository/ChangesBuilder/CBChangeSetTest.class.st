@@ -25,20 +25,24 @@ CBChangeSetTest >> testAddClass [
 
 { #category : 'tests' }
 CBChangeSetTest >> testAddClassChanges [
-	| class |
+
+	| class builder |
 	class := CBClass new name: 'GeneratedClass'.
 	class addInstVarNamed: 'var1'.
 	class addClassVarNamed: 'classVar1'.
 	changeSet addClass: class.
-	self assert: changeSet classes equals: {class}.
+	self assert: changeSet classes equals: { class }.
+	builder := changeSet allRefactoringChanges first builder.
+	self assert: builder superclassName equals: 'Object'.
+	self assert: builder name equals: #GeneratedClass.
 	self
-		assert: changeSet allRefactoringChanges first oldVersionTextToDisplay withUnixLineEndings
-		equals:
-			'Object subclass: #GeneratedClass
-	instanceVariableNames: ''var1''
-	classVariableNames: ''classVar1''
-	poolDictionaries: ''''
-	category: ''Unclassified''' withUnixLineEndings
+		assertCollection: (builder slots collect: #name)
+		equals: #( var1 ).
+	self
+		assertCollection: (builder sharedVariables collect: #name)
+		equals: #( classVar1 ).
+	self assert: builder package equals: 'Unclassified'.
+	self assert: builder tag equals: ''
 ]
 
 { #category : 'tests' }
@@ -103,10 +107,11 @@ meth ^ 1'
 
 { #category : 'tests' }
 CBChangeSetTest >> testFromRealClass [
+
 	| realClass class |
 	realClass := self class.
 	class := changeSet fromRealClass: realClass.
-	self assert: class instanceVariables equals: realClass instanceVariables.
+	self assert: class instVarNames equals: realClass instVarNames.
 	self assert: class parent equals: realClass superclass name.
-	self assert: changeSet classes asArray equals: {class}
+	self assert: changeSet classes asArray equals: { class }
 ]

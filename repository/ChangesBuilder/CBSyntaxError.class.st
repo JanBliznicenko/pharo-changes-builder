@@ -15,11 +15,11 @@ Class {
 }
 
 { #category : 'instance creation' }
-CBSyntaxError class >> fromSyntaxErrorNotification: aNotification [
+CBSyntaxError class >> fromCodeError: anError [
 	^ self new
-		setCode: aNotification errorCode
-		location: aNotification location
-		errorMessage: aNotification errorMessage
+		setCode: anError sourceCode
+		location: anError location
+		errorMessage: anError messageText
 ]
 
 { #category : 'initialization' }

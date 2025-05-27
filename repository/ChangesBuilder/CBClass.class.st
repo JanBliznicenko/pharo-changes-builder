@@ -10,7 +10,7 @@ Class {
 		'name',
 		'comment',
 		'parent',
-		'package',
+		'packageName',
 		'tag',
 		'instanceVariables',
 		'classVariables',
@@ -30,20 +30,20 @@ CBClass class >> fromClass: aRealClass [
 	(class := self new)
 		name: aRealClass name;
 		parent: aRealClass superclass name;
-		package: aRealClass package name;
-		tag: aRealClass packageTag name.
+		packageName: aRealClass packageName;
+		tag: aRealClass packageTag.
 	aRealClass instanceVariables do: [ :each |
-		each isString
-			ifTrue: [ class addInstVarNamed: each ]
-			ifFalse: [ class addInstVarSlot: each ] ].
+			each isString
+				ifTrue: [ class addInstVarNamed: each ]
+				ifFalse: [ class addInstVarSlot: each ] ].
 	aRealClass classVariables do: [ :each |
-		each isString
-			ifTrue: [ class addClassVarNamed: each ]
-			ifFalse: [ class addClassVar: each ] ].
+			each isString
+				ifTrue: [ class addClassVarNamed: each ]
+				ifFalse: [ class addClassVar: each ] ].
 	aRealClass class instanceVariables do: [ :each |
-		each isString
-			ifTrue: [ class addMetaInstVarNamed: each ]
-			ifFalse: [ class addMetaInstVarSlot: each ] ].
+			each isString
+				ifTrue: [ class addMetaInstVarNamed: each ]
+				ifFalse: [ class addMetaInstVarSlot: each ] ].
 	^ class
 ]
 
@@ -63,7 +63,7 @@ CBClass class >> name: aString parent: aClass package: aPkgName tag: aTagName [
 	^ self new
 		  name: aString;
 		  parent: aClass;
-		  package: aPkgName;
+		  packageName: aPkgName;
 		  tag: aTagName;
 		  yourself
 ]
@@ -126,22 +126,16 @@ CBClass >> classDefinition [
 	self assert: [ parent isString & parent isNotEmpty ].
 	self assert: [ instanceVariables isCollection ].
 	self assert: [ instanceVariables allSatisfy: #isString ].
-	self assert: [ package isString & package isNotEmpty ].
+	self assert: [ packageName isString & packageName isNotEmpty ].
 	self assert: [ tag isString ].
 	^ [ :builder |
-	  builder
-		  superclassName: parent;
-		  name: name;
-		  slots: self instanceVariables sorted;
-		  sharedVariables: self classVariables sorted;
-		  package: package;
-		  tag: tag ]
-]
-
-{ #category : 'generating' }
-CBClass >> classDefinitionCode [
-
-	^ self classDefinition sourceCode
+		  builder
+			  superclassName: parent;
+			  name: name;
+			  slots: self instanceVariables sorted;
+			  sharedVariables: self classVariables sorted;
+			  package: packageName;
+			  tag: tag ]
 ]
 
 { #category : 'accessing' }
@@ -200,7 +194,7 @@ CBClass >> hasMetaInstVarNamed: aString [
 CBClass >> initialize [
 	super initialize.
 	parent := 'Object'.
-	package := 'Unclassified'.
+	packageName := 'Unclassified'.
 	tag := ''.
 	instanceVariables := Set new.
 	classVariables := Set new.
@@ -250,13 +244,32 @@ CBClass >> name: aString [
 ]
 
 { #category : 'accessing' }
-CBClass >> package [
-	^ package
+CBClass >> package: aPackageName [
+
+	self packageName: aPackageName
 ]
 
 { #category : 'accessing' }
-CBClass >> package: aString [
-	package := aString
+CBClass >> packageName [
+	^ packageName
+]
+
+{ #category : 'accessing' }
+CBClass >> packageName: aPackageName [
+
+	packageName := aPackageName
+]
+
+{ #category : 'accessing' }
+CBClass >> packageTag [
+
+	^ self tag
+]
+
+{ #category : 'accessing' }
+CBClass >> packageTag: aString [
+
+	self tag: aString
 ]
 
 { #category : 'accessing' }

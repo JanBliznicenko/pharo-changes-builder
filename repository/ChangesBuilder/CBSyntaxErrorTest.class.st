@@ -8,16 +8,18 @@ Class {
 
 { #category : 'tests' }
 CBSyntaxErrorTest >> testFromSyntaxErrorNotification [
-	| error notification |
-	notification := SyntaxErrorNotification new
-		setClass: self class
-		code: 'code'
-		doitFlag: false
-		errorMessage: 'message'
-		location: 3.
-	error := CBSyntaxError fromSyntaxErrorNotification: notification.
-	self assert: error errorCode equals: 'code'.
-	self assert: error location equals: 3.
+
+	| error codeError |
+	codeError := OCCodeError new notice: (OCNotice new
+			              messageText: 'message';
+			              node: (OCVariableNode new
+					               name: ':';
+					               start: 8;
+					               parent: (OCMethodNode new source: 'code:x :'))).
+	error := CBSyntaxError fromCodeError: codeError.
+
+	self assert: error errorCode equals: 'code:x :'.
+	self assert: error location equals: 8.
 	self assert: error messageText equals: 'message'
 ]
 

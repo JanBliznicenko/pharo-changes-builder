@@ -59,37 +59,58 @@ CBClassTest >> testAddMethod [
 ]
 
 { #category : 'tests' }
-CBClassTest >> testClassDefinitionCode [
+CBClassTest >> testClassDefinition [
+
+	| builder returnedBuilder |
 	class := CBClass
-		name: 'SomeGeneratedClassSomewhere'
-		parent: 'OPCGClassTest'
-		package: 'Somewhere'.
+		         name: 'SomeGeneratedClassSomewhere'
+		         parent: 'OPCGClassTest'
+		         package: 'Somewhere'.
+	builder := CBDummyShiftClassBuilder new.
+	returnedBuilder := class classDefinition value: builder.
+	self assert: returnedBuilder identicalTo: builder.
+	self assert: builder superclassName equals: 'OPCGClassTest'.
+	self assert: builder name equals: #SomeGeneratedClassSomewhere.
 	self
-		assert: class classDefinitionCode
-		equals:
-			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''''<n><t>classVariableNames: ''''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
-				expandMacros
+		assertCollection: (builder slots collect: #name)
+		equals: #(  ).
+	self
+		assertCollection: (builder sharedVariables collect: #name)
+		equals: #(  ).
+	self assert: builder package equals: 'Somewhere'.
+	self assert: builder tag equals: ''
 ]
 
 { #category : 'tests' }
 CBClassTest >> testClassDefinitionVarsSorted [
+
+	| builder returnedBuilder |
 	class := CBClass
-		name: 'SomeGeneratedClassSomewhere'
-		parent: 'OPCGClassTest'
-		package: 'Somewhere'.
+		         name: 'SomeGeneratedClassSomewhere'
+		         parent: 'OPCGClassTest'
+		         package: 'Somewhere'.
 	class addInstVarNamed: 'var2'.
 	class addInstVarNamed: 'var1'.
 	class addClassVarNamed: 'clsVar2'.
 	class addClassVarNamed: 'clsVar1'.
+	builder := CBDummyShiftClassBuilder new.
+	returnedBuilder := class classDefinition value: builder.
+	self assert: returnedBuilder identicalTo: builder.
+	self assert: builder superclassName equals: 'OPCGClassTest'.
+	self assert: builder name equals: #SomeGeneratedClassSomewhere.
 	self
-		assert: class classDefinitionCode
-		equals:
-			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''var1 var2''<n><t>classVariableNames: ''clsVar1 clsVar2''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
-				expandMacros
+		assertCollection: (builder slots collect: #name)
+		equals: #( var1 var2 ).
+	self
+		assertCollection: (builder sharedVariables collect: #name)
+		equals: #( clsVar1 clsVar2 ).
+	self assert: builder package equals: 'Somewhere'.
+	self assert: builder tag equals: ''
 ]
 
 { #category : 'tests' }
 CBClassTest >> testClassDefinitionWithInstanceAndClassVars [
+	| builder returnedBuilder |
 	class := CBClass
 		name: 'SomeGeneratedClassSomewhere'
 		parent: 'OPCGClassTest'
@@ -98,26 +119,44 @@ CBClassTest >> testClassDefinitionWithInstanceAndClassVars [
 	class addInstVarNamed: 'var2'.
 	class addClassVarNamed: 'clsVar1'.
 	class addClassVarNamed: 'clsVar2'.
+	builder := CBDummyShiftClassBuilder new.
+	returnedBuilder := class classDefinition value: builder.
+	self assert: returnedBuilder identicalTo: builder.
+	self assert: builder superclassName equals: 'OPCGClassTest'.
+	self assert: builder name equals: #SomeGeneratedClassSomewhere.
 	self
-		assert: class classDefinitionCode
-		equals:
-			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''var1 var2''<n><t>classVariableNames: ''clsVar1 clsVar2''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
-				expandMacros
+		assertCollection: (builder slots collect: #name)
+		equals: #( var1 var2 ).
+	self
+		assertCollection: (builder sharedVariables collect: #name)
+		equals: #( clsVar1 clsVar2 ).
+	self assert: builder package equals: 'Somewhere'.
+	self assert: builder tag equals: ''
 ]
 
 { #category : 'tests' }
 CBClassTest >> testClassDefinitionWithInstanceVars [
+
+	| builder returnedBuilder |
 	class := CBClass
-		name: 'SomeGeneratedClassSomewhere'
-		parent: 'OPCGClassTest'
-		package: 'Somewhere'.
+		         name: 'SomeGeneratedClassSomewhere'
+		         parent: 'OPCGClassTest'
+		         package: 'Somewhere'.
 	class addInstVarNamed: 'var1'.
 	class addInstVarNamed: 'var2'.
+	builder := CBDummyShiftClassBuilder new.
+	returnedBuilder := class classDefinition value: builder.
+	self assert: returnedBuilder identicalTo: builder.
+	self assert: builder superclassName equals: 'OPCGClassTest'.
+	self assert: builder name equals: #SomeGeneratedClassSomewhere.
 	self
-		assert: class classDefinitionCode
-		equals:
-			'OPCGClassTest subclass: #SomeGeneratedClassSomewhere<n><t>instanceVariableNames: ''var1 var2''<n><t>classVariableNames: ''''<n><t>poolDictionaries: ''''<n><t>category: ''Somewhere'''
-				expandMacros
+		assertCollection: (builder slots collect: #name)
+		equals: #( var1 var2 ).
+	self
+		assertCollection: (builder sharedVariables collect: #name)
+		equals: #(  ).
+	self assert: builder package equals: 'Somewhere'.
+	self assert: builder tag equals: ''
 ]
 
 { #category : 'tests - accessing' }
@@ -161,7 +200,7 @@ CBClassTest >> testCreate [
 	result := CBClass name: 'MyClass' parent: 'Something' package: 'Generated'.
 	self assert: result name equals: 'MyClass'.
 	self assert: result parent equals: 'Something'.
-	self assert: result package equals: 'Generated'
+	self assert: result packageName equals: 'Generated'
 ]
 
 { #category : 'tests' }
@@ -169,15 +208,17 @@ CBClassTest >> testFromRealClass [
 	| realClass |
 	realClass := self class.
 	class := CBClass fromClass: realClass.
-	self assert: class instanceVariables equals: realClass instanceVariables.
+	self assert: class instVarNames equals: realClass instVarNames.
 	self assert: class parent equals: realClass superclass name.
-	self assert: class package equals: realClass category
+	self assert: class packageName equals: realClass packageName.
+	self assert: class packageTag equals: realClass packageTag
 ]
 
 { #category : 'tests - accessing' }
 CBClassTest >> testPackage [
+
 	class package: 'Wherever'.
-	self assert: class package equals: 'Wherever'
+	self assert: class packageName equals: 'Wherever'
 ]
 
 { #category : 'tests - accessing' }

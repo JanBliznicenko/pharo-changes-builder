@@ -3,66 +3,24 @@ I override ChangesBrowser>>accept to provide a progress bar.
 "
 Class {
 	#name : 'CBChangesBrowser',
-	#superclass : 'ChangesBrowser',
-	#instVars : [
-		'diffModel'
-	],
+	#superclass : 'StChangesBrowserPresenter',
 	#category : 'ChangesBuilder-Utilities',
 	#package : 'ChangesBuilder',
 	#tag : 'Utilities'
 }
 
-{ #category : 'specs' }
-CBChangesBrowser class >> defaultSpec [
-	<spec>
-	^ SpecLayout composed
-		newColumn: [ :column1 | 
-			column1
-				newColumn: [ :column2 | column2 add: #changesTree ];
-				addSplitter;
-				add: #diffModel ]
-]
-
 { #category : 'visiting' }
 CBChangesBrowser >> accept [
-	self okToChange
-		ifFalse: [ ^ self ].
-	self pickedChanges
-		ifNotEmpty: [ [ :job | 
-			self pickedChanges
-				do: [ :change | 
-					RBRefactoryChangeManager instance performChange: change.
-					job increment ] ] asJob
-				title: 'Applying changes';
-				min: 0;
-				max: self pickedChanges size;
-				run ].
-	window value delete
-]
 
-{ #category : 'accessing' }
-CBChangesBrowser >> diffModel [
-	^ diffModel
+	self okToChange ifFalse: [ ^ self ].
+	super accept.
+	self withWindowDo: [ :window | window close ]
 ]
 
 { #category : 'initialization' }
-CBChangesBrowser >> initialExtent [
-	^ 800 @ 600
-]
+CBChangesBrowser >> initializeDialogWindow: aWindow [
 
-{ #category : 'initialization' }
-CBChangesBrowser >> initializePresenter [
-	changesTree
-		whenHighlightedItemChanged: [ :item | 
-			item
-				ifNotNil: [ diffModel
-						leftText: item content oldVersionTextToDisplay;
-						rightText: item content textToDisplay ] ]
-]
+	super initializeDialogWindow: aWindow.
 
-{ #category : 'initialization' }
-CBChangesBrowser >> initializeWidgets [
-	super initializeWidgets.
-	diffModel := self newDiff.
-	self focusOrder add: diffModel
+	aWindow initialExtent: 800 @ 600
 ]

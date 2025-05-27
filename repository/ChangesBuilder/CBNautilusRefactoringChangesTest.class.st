@@ -28,15 +28,22 @@ CBNautilusRefactoringChangesTest >> testAddMetaVarChanged [
 
 { #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testAddMetaVarNotChanged [
-	| cls change |
+
+	| cls changes |
 	cls := CBClass new
-		name: #CBNautilusRefactoringChangesTest;
-		parent: #TestCase;
-		package: 'ChangesBuilder-Tests'.
+		       name: #CBNautilusRefactoringChangesTest;
+		       parent: #TestCase;
+		       package: 'ChangesBuilder';
+		       tag: 'Tests'.
 	cls addMetaInstVarNamed: 'metaVar1'.
-	change := (CBChangeSet new addClass: cls) allRefactoringChanges last.
-	self assert: change textToDisplay = change oldVersionTextToDisplay.
-	self assert: (CBChangeSet new addClass: cls) refactoringChanges isEmpty
+	changes := (CBChangeSet new addClass: cls) allRefactoringChanges.
+	changes do: [ :change |
+			self
+				assert: change textToDisplay
+				equals: change oldVersionTextToDisplay ].
+	self
+		assertCollection: (CBChangeSet new addClass: cls) refactoringChanges
+		hasSameElements: #(  )
 ]
 
 { #category : 'tests' }
@@ -53,14 +60,19 @@ CBNautilusRefactoringChangesTest >> testClassChanged [
 
 { #category : 'tests' }
 CBNautilusRefactoringChangesTest >> testClassNotChanged [
+
 	| cls change |
 	cls := CBClass new
-		name: #CBNautilusRefactoringChangesTest;
-		parent: #TestCase;
-		package: 'ChangesBuilder-Tests'.
+		       name: #CBNautilusRefactoringChangesTest;
+		       parent: #TestCase;
+		       package: 'ChangesBuilder';
+		       tag: 'Tests'.
 	change := (CBChangeSet new addClass: cls) allRefactoringChanges first.
-	self assert: change textToDisplay equals: change oldVersionTextToDisplay.
-	self assert: (CBChangeSet new addClass: cls) refactoringChanges isEmpty
+	self
+		assert: change textToDisplay
+		equals: change oldVersionTextToDisplay.
+	self assert:
+		(CBChangeSet new addClass: cls) refactoringChanges isEmpty
 ]
 
 { #category : 'tests' }

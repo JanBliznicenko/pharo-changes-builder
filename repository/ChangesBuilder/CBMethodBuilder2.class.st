@@ -54,74 +54,82 @@ CBMethodBuilder2 >> asComment: aString [
 	^ aString copyReplaceAll: '"' with: '""'
 ]
 
-{ #category : 'utility' }
+{ #category : 'converting' }
 CBMethodBuilder2 >> asPragma: aPragma [
+
 	^ aPragma printString
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> basicBuildGetter [
+
 	selector := selector asRetriever.
-	^ String
-		<< [ :stream | 
-			stream << self buildPreambles.
-			stream << '^ ' << selector ]
+	^ Symbol streamContents: [ :stream |
+			  stream << self buildPreambles.
+			  stream << '^ ' << selector ]
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> basicBuildSetter [
+
 	selector := selector asMutator.
-	^ String
-		<< [ :stream | 
-			stream << self buildPreambles.
-			stream << selector asRetriever << ' := ' << (self asArgument: arguments first) ]
+	^ Symbol streamContents: [ :stream |
+			  stream << self buildPreambles.
+			  stream << selector asRetriever << ' := '
+			  << (self asArgument: arguments first) ]
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildComment [
-	^ String
-		<< [ :stream | 
-			stream << '"'.
-			comments do: [ :each | stream << (self asComment: each) ] separatedBy: [ stream cr tab ].
-			stream << '"' ]
+
+	^ String streamContents: [ :stream |
+			  stream << '"'.
+			  comments
+				  do: [ :each | stream << (self asComment: each) ]
+				  separatedBy: [ stream cr tab ].
+			  stream << '"' ]
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildGetter [
-	^ (RBParser parseMethod: self basicBuildGetter) formattedCode
+	^ (OCParser parseMethod: self basicBuildGetter) formattedCode
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildPragmas [
-	^ String
-		<<
-			[ :stream | pragmas do: [ :each | stream << (self asPragma: each) ] separatedBy: [ stream cr tab ] ]
+
+	^ String streamContents: [ :stream |
+			  pragmas
+				  do: [ :each | stream << (self asPragma: each) ]
+				  separatedBy: [ stream cr tab ] ]
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildPreambles [
-	^ String
-		<< [ :stream | 
-			stream << self buildSelector.
-			self buildComment ifNotEmpty: [ :com | stream tab << com ].
-			self buildPragmas ifNotEmpty: [ :prag | stream tab << prag ] ]
+
+	^ String streamContents: [ :stream |
+			  stream << self buildSelector.
+			  self buildComment ifNotEmpty: [ :com | stream tab << com ].
+			  self buildPragmas ifNotEmpty: [ :prag | stream tab << prag ] ]
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildSelector [
-	^ String
-		<< [ :stream | 
-			selector numArgs = 0
-				ifTrue: [ stream << selector ]
-				ifFalse: [ selector keywords
-						with: arguments
-						do: [ :kw :arg | stream << kw << (self asArgument: arg) << ' ' ].
-					stream cr ] ]
+
+	^ Symbol streamContents: [ :stream |
+			  selector numArgs = 0
+				  ifTrue: [ stream << selector ]
+				  ifFalse: [
+						  selector keywords
+							  with: arguments
+							  do: [ :kw :arg |
+							  stream << kw << (self asArgument: arg) << ' ' ].
+						  stream cr ] ]
 ]
 
 { #category : 'building' }
 CBMethodBuilder2 >> buildSetter [
-	^ (RBParser parseMethod: self basicBuildSetter) formattedCode
+	^ (OCParser parseMethod: self basicBuildSetter) formattedCode
 ]
 
 { #category : 'accessing' }

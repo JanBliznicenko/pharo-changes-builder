@@ -118,7 +118,7 @@ CBMethod >> protocolName: aString [
 
 { #category : 'accessing' }
 CBMethod >> selector [
-	^ (RBParser parseMethod: source) selector
+	^ (OCParser parseMethod: source) selector
 ]
 
 { #category : 'definition' }
@@ -184,7 +184,7 @@ CBMethod >> source: aString [
 
 { #category : 'accessing' }
 CBMethod >> validateSource: aString [
-	[ RBParser parseMethod: aString ]
-		on: SyntaxErrorNotification
-		do: [ :ex | (CBSyntaxError fromSyntaxErrorNotification: ex) signal ]
+	[ OCParser parseMethod: aString ]
+		on: OCCodeError
+		do: [ :ex | (CBSyntaxError fromCodeError: ex) signal ]
 ]
