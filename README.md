@@ -1,5 +1,4 @@
 # Changes Builder
-[![Build Status](https://travis-ci.org/peteruhnak/pharo-changes-builder.svg?branch=master)](https://travis-ci.org/peteruhnak/pharo-changes-builder) [![Coverage Status](https://coveralls.io/repos/github/peteruhnak/pharo-changes-builder/badge.svg?branch=master)](https://coveralls.io/github/peteruhnak/pharo-changes-builder?branch=master)
 
 A small wrapper library to simplify common RBRefactoring operations when generating code.
 
@@ -13,7 +12,7 @@ On top of the generation, this library also fixes couple RBRefactoring issues, w
 ```smalltalk
 Metacello new
 	baseline: 'ChangesBuilder';
-	repository: 'github://peteruhnak/pharo-changes-builder/repository';
+	repository: 'github://JanBliznicenko/pharo-changes-builder';
 	load.
 ```
 

@@ -7,9 +7,9 @@ SmalltalkCISpec {
 		}
 	],
 	#testing : {
-		#packages : [ 'ChangesBuilder' ],
+		#packages : [ 'ChangesBuilder*' ],
 		#coverage : {
-			#packages : [ 'ChangesBuilder' ]
+			#packages : [ 'ChangesBuilder*' ]
 		}
 	}
 }

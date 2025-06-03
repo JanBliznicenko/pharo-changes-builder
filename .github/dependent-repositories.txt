@@ -1,0 +1,5 @@
+{
+	"include" : [
+		{ "repository" : "OpenPonk/uml-bootstrap-generator", "branch" : "master", "build-dependent" : true }
+	]
+}
