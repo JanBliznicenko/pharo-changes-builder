@@ -114,9 +114,9 @@ CBClass >> addMethod: aMethod [
 { #category : 'accessing' }
 CBClass >> categoryName [
 
-	self tag ifNil: [ ^ self package ].
-	self tag ifEmpty: [ ^ self package ].
-	^ self package , '-' , self tag
+	self packageTag ifNil: [ ^ self packageName ].
+	self packageTag ifEmpty: [ ^ self packageName ].
+	^ self packageName , '-' , self packageTag
 ]
 
 { #category : 'generating' }
