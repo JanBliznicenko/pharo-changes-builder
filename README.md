@@ -12,7 +12,7 @@ On top of the generation, this library also fixes couple RBRefactoring issues, w
 ```smalltalk
 Metacello new
 	baseline: 'ChangesBuilder';
-	repository: 'github://JanBliznicenko/pharo-changes-builder';
+	repository: 'github://OpenPonk/pharo-changes-builder';
 	load.
 ```
 
